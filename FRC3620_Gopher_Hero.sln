@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31112.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FRC3620_Gopher_Hero", "FRC3620_Gopher_Hero\FRC3620_Gopher_Hero.csproj", "{A2909E77-C19D-408C-A164-4CE48D7D9FDE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2909E77-C19D-408C-A164-4CE48D7D9FDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2909E77-C19D-408C-A164-4CE48D7D9FDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2909E77-C19D-408C-A164-4CE48D7D9FDE}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A2909E77-C19D-408C-A164-4CE48D7D9FDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2909E77-C19D-408C-A164-4CE48D7D9FDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2909E77-C19D-408C-A164-4CE48D7D9FDE}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A7E02F90-1580-4316-A3F7-A804F43B6396}
+	EndGlobalSection
+EndGlobal

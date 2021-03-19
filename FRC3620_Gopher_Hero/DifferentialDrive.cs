@@ -27,7 +27,7 @@ namespace FRC3620_Gopher_Hero
             double zRotation = MathUtil.clamp(_zRotation, -1.0, 1.0);
             zRotation = MathUtil.applyDeadband(zRotation, m_deadband);
 
-            Debug.Print("Joy: " + _xSpeed + " " + xSpeed + "; " + _zRotation + " " + zRotation);
+            Debug.Print("Joy1: " + _xSpeed + " " + xSpeed + "; " + _zRotation + " " + zRotation);
 
             // Square the inputs (while preserving the sign) to increase fine control
             // while permitting full power.
@@ -36,44 +36,15 @@ namespace FRC3620_Gopher_Hero
                 xSpeed = MathUtil.copySign(xSpeed * xSpeed, xSpeed);
                 zRotation = MathUtil.copySign(zRotation * zRotation, zRotation);
             }
+            Debug.Print("Joy2: " + _xSpeed + " " + xSpeed + "; " + _zRotation + " " + zRotation);
 
-            double leftMotorOutput;
-            double rightMotorOutput;
+            // stolen from https://stemrobotics.cs.pdx.edu/node/4736
 
-            double maxInput = MathUtil.copySign(System.Math.Max(System.Math.Abs(xSpeed), System.Math.Abs(zRotation)), xSpeed);
+            double leftMotorOutput = zRotation - xSpeed;
+            double rightMotorOutput = zRotation + xSpeed;
 
-            if (xSpeed >= 0.0)
-            {
-                // First quadrant, else second quadrant
-                if (zRotation >= 0.0)
-                {
-                    leftMotorOutput = maxInput;
-                    rightMotorOutput = xSpeed - zRotation;
-                }
-                else
-                {
-                    leftMotorOutput = xSpeed + zRotation;
-                    rightMotorOutput = maxInput;
-                }
-            }
-            else
-            {
-                // Third quadrant, else fourth quadrant
-                if (zRotation >= 0.0)
-                {
-                    leftMotorOutput = xSpeed + zRotation;
-                    rightMotorOutput = maxInput;
-                }
-                else
-                {
-                    leftMotorOutput = maxInput;
-                    rightMotorOutput = xSpeed - zRotation;
-                }
-            }
-
-            double leftPower = MathUtil.clamp(leftMotorOutput, -1.0, 1.0) * m_maxOutput;
-            double maxOutput = m_maxOutput * m_rightSideInvertMultiplier;
-            double rightPower = MathUtil.clamp(rightMotorOutput, -1.0, 1.0) * maxOutput;
+            double leftPower = MathUtil.clamp(leftMotorOutput, -1.0, 1.0);
+            double rightPower = MathUtil.clamp(rightMotorOutput, -1.0, 1.0);
             m_leftMotor.Set(CTRE.Phoenix.MotorControl.ControlMode.PercentOutput, leftPower);
             m_rightMotor.Set(CTRE.Phoenix.MotorControl.ControlMode.PercentOutput, rightPower);
 

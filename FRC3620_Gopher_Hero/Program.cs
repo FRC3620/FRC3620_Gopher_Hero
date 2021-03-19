@@ -44,6 +44,11 @@ namespace FRC3620_Gopher_Hero
                     lid.lidStop();
                 }
 
+                // look at BTN
+                Boolean btn_a = (gv.btns & 0x1) != 0;
+                Debug.Print("Btn_A: " + btn_a);
+                Hardware._testOutputPort.Write(btn_a);
+
                 /* wait 10 milliseconds and do it all over again */
                 Thread.Sleep(10);
             }

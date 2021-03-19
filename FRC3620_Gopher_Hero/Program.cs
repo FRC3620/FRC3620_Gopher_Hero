@@ -12,6 +12,7 @@ namespace FRC3620_Gopher_Hero
         public static void Main()
         {
             DifferentialDrive drive = new DifferentialDrive(Hardware._leftDrive, Hardware._rightDrive);
+            Lid lid = new Lid(Hardware._lid);
             CTRE.Phoenix.Controller.GameControllerValues gv = new CTRE.Phoenix.Controller.GameControllerValues();
 
             while (true)
@@ -25,8 +26,23 @@ namespace FRC3620_Gopher_Hero
                 // read gamepad data all at once
                 Hardware._gamepad.GetAllValues(ref gv);
 
-                // drive the robot
-                drive.arcadeDrive(gv.axes[1], gv.axes[0], false);
+                // drive the robot with F710 right side joystick
+                drive.arcadeDrive(gv.axes[3], gv.axes[2], false);
+
+                // work the lid based on F710 POV
+                int pov = gv.pov;
+                if ((pov & 0x1) != 0)
+                {
+                    // POV UP
+                    lid.lidUp();
+                } else if ((pov & 0x2) != 0)
+                {
+                    // POV DOWN
+                    lid.lidDown();
+                } else
+                {
+                    lid.lidStop();
+                }
 
                 /* wait 10 milliseconds and do it all over again */
                 Thread.Sleep(10);

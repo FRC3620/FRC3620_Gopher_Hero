@@ -12,14 +12,27 @@ namespace FRC3620_Gopher_Hero
         public static void Main()
         {
             DifferentialDrive drive = new DifferentialDrive(Hardware._leftDrive, Hardware._rightDrive);
+
             Lid lid = new Lid(Hardware._lid);
+
+            Shooter shooter = new Shooter();
+            shooter.startup();
+
             CTRE.Phoenix.Controller.GameControllerValues gv = new CTRE.Phoenix.Controller.GameControllerValues();
+
+            bool btn_a_was = false;
+            bool btn_b_was = false;
 
             while (true)
             {
+                bool enabled = false;
                 // only run motors if Gamepad is attached
                 if (Hardware._gamepad.GetConnectionStatus() == UsbDeviceConnection.Connected)
                 {
+                    enabled = true;
+                }
+
+                if (enabled) { 
                     CTRE.Phoenix.Watchdog.Feed();
                 }
 
@@ -45,9 +58,31 @@ namespace FRC3620_Gopher_Hero
                 }
 
                 // look at BTN
-                Boolean btn_a = (gv.btns & 0x1) != 0;
-                Debug.Print("Btn_A: " + btn_a);
-                Hardware._testOutputPort.Write(btn_a);
+                bool btn_a = (gv.btns & 0x1) != 0;
+                if (btn_a && ! btn_a_was)
+                {
+                    Debug.Print ("btn_a hit");
+                    if (!shooter.requestFill(0))
+                    {
+                        Debug.Print("tank 0 not available to fill");
+                    }
+                }
+                btn_a_was = btn_a;
+
+                bool btn_b = (gv.btns & 0x2) != 0;
+                if (btn_b && ! btn_b_was)
+                {
+                    Debug.Print("btn_b hit");
+                    if (!shooter.requestFill(1))
+                    {
+                        Debug.Print("tank 1 not available to fill");
+                    }
+                }
+                btn_b_was = btn_b;
+
+
+                //
+                shooter.periodic(enabled);
 
                 /* wait 10 milliseconds and do it all over again */
                 Thread.Sleep(10);

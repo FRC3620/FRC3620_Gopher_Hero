@@ -35,6 +35,8 @@
   </PropertyGroup>
   <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <ItemGroup>
+    <Compile Include="Timer.cs" />
+    <Compile Include="Shooter.cs" />
     <Compile Include="Lid.cs" />
     <Compile Include="Hardware.cs" />
     <Compile Include="MathUtil.cs" />

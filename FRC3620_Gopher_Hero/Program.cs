@@ -18,10 +18,16 @@ namespace FRC3620_Gopher_Hero
             Shooter shooter = new Shooter();
             shooter.startup();
 
+            Display display = new Display();
+
             CTRE.Phoenix.Controller.GameControllerValues gv = new CTRE.Phoenix.Controller.GameControllerValues();
 
             bool btn_a_was = false;
             bool btn_b_was = false;
+
+            Timer tick = new Timer();
+            tick.reset();
+            tick.start();
 
             while (true)
             {
@@ -30,11 +36,16 @@ namespace FRC3620_Gopher_Hero
                 if (Hardware._gamepad.GetConnectionStatus() == UsbDeviceConnection.Connected)
                 {
                     enabled = true;
+                    display.updateConnected(true);
+                } else
+                {
+                    display.updateConnected(false);
                 }
 
                 if (enabled) { 
                     CTRE.Phoenix.Watchdog.Feed();
                 }
+                display.updateEnabled(enabled);
 
                 // read gamepad data all at once
                 Hardware._gamepad.GetAllValues(ref gv);
@@ -83,6 +94,11 @@ namespace FRC3620_Gopher_Hero
 
                 //
                 shooter.periodic(enabled);
+
+                if (tick.hasPeriodPassed(5.0))
+                {
+                    Debug.Print("tick...");
+                }
 
                 /* wait 10 milliseconds and do it all over again */
                 Thread.Sleep(10);

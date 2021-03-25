@@ -17,13 +17,16 @@ namespace FRC3620_Gopher_Hero
 
         public static OutputPort _testOutputPort;
 
+        public static OutputPort b0_supply, b0_tank, b0_shot;
         public static OutputPort b1_supply, b1_tank, b1_shot;
-        public static OutputPort b2_supply, b2_tank, b2_shot;
+        public static AnalogInput b0_pressure_sensor;
         public static AnalogInput b1_pressure_sensor;
-        public static AnalogInput b2_pressure_sensor;
 
         /* Gamepad */
         public static GameController _gamepad;
+
+        /* Display */
+        public static Display _display;
 
         static Hardware()
         {
@@ -39,16 +42,18 @@ namespace FRC3620_Gopher_Hero
             //            Hardware Pin 6 is CTRE.HERO.IO.Port3.Pin8.
             _testOutputPort = new OutputPort(CTRE.HERO.IO.Port5.Pin8, false);
 
-            b1_supply = new OutputPort(CTRE.HERO.IO.Port3.Pin3, false);
-            b1_tank = new OutputPort(CTRE.HERO.IO.Port3.Pin4, false);
-            b1_shot = new OutputPort(CTRE.HERO.IO.Port3.Pin5, false);
-            b2_supply = new OutputPort(CTRE.HERO.IO.Port3.Pin6, false);
-            b2_tank = new OutputPort(CTRE.HERO.IO.Port3.Pin7, false);
-            b2_shot = new OutputPort(CTRE.HERO.IO.Port3.Pin8, false);
+            b0_supply = new OutputPort(CTRE.HERO.IO.Port3.Pin3, false);
+            b0_tank = new OutputPort(CTRE.HERO.IO.Port3.Pin4, false);
+            b0_shot = new OutputPort(CTRE.HERO.IO.Port3.Pin5, false);
+            b1_supply = new OutputPort(CTRE.HERO.IO.Port3.Pin6, false);
+            b1_tank = new OutputPort(CTRE.HERO.IO.Port3.Pin7, false);
+            b1_shot = new OutputPort(CTRE.HERO.IO.Port3.Pin8, false);
 
             UsbHostDevice usb = CTRE.Phoenix.UsbHostDevice.GetInstance();
             _gamepad = new GameController(usb);
             usb.SetSelectableXInputFilter(UsbHostDevice.SelectableXInputFilter.XInputDevices);
+
+            _display = new Display();
         }
     }
 }

@@ -18,8 +18,6 @@ namespace FRC3620_Gopher_Hero
             Shooter shooter = new Shooter();
             shooter.startup();
 
-            Display display = new Display();
-
             CTRE.Phoenix.Controller.GameControllerValues gv = new CTRE.Phoenix.Controller.GameControllerValues();
 
             bool btn_a_was = false;
@@ -36,16 +34,16 @@ namespace FRC3620_Gopher_Hero
                 if (Hardware._gamepad.GetConnectionStatus() == UsbDeviceConnection.Connected)
                 {
                     enabled = true;
-                    display.updateConnected(true);
+                    Hardware._display.updateConnected(true);
                 } else
                 {
-                    display.updateConnected(false);
+                    Hardware._display.updateConnected(false);
                 }
 
                 if (enabled) { 
                     CTRE.Phoenix.Watchdog.Feed();
                 }
-                display.updateEnabled(enabled);
+                Hardware._display.updateEnabled(enabled);
 
                 // read gamepad data all at once
                 Hardware._gamepad.GetAllValues(ref gv);

@@ -6,19 +6,19 @@ namespace FRC3620_Gopher_Hero
 {
     public class Shooter
     {
-        static int NUMBER_OF_BARRELS = 2;
+        public const int NUMBER_OF_BARRELS = 2;
 
         AirMaster fillMaster = new AirMaster();
-        BarrelPrototype[] barrels = new BarrelPrototype[NUMBER_OF_BARRELS];
+        Barrel[] barrels = new Barrel[NUMBER_OF_BARRELS];
 
         public Shooter()
         {
-            barrels[0] = new BarrelPrototype(Hardware.b1_supply, Hardware.b1_tank, Hardware.b1_shot,
-                Hardware.b1_pressure_sensor, fillMaster, "b1");
+            barrels[0] = new Barrel(Hardware.b0_supply, Hardware.b0_tank, Hardware.b0_shot,
+                Hardware.b0_pressure_sensor, fillMaster, 0);
             if (NUMBER_OF_BARRELS > 1)
             {
-                barrels[1] = new BarrelPrototype(Hardware.b2_supply, Hardware.b2_tank, Hardware.b2_shot,
-                    Hardware.b2_pressure_sensor, fillMaster, "b2");
+                barrels[1] = new Barrel(Hardware.b1_supply, Hardware.b1_tank, Hardware.b1_shot,
+                    Hardware.b1_pressure_sensor, fillMaster, 1);
             }
         }
 
@@ -89,14 +89,14 @@ namespace FRC3620_Gopher_Hero
 
     class AirMaster
     {
-        BarrelPrototype whoIsUsingIt = null;
+        Barrel whoIsUsingIt = null;
 
-        public bool reserve(BarrelPrototype b)
+        public bool reserve(Barrel b)
         {
             if (whoIsUsingIt == null)
             {
                 whoIsUsingIt = b;
-                Debug.Print (b.getBarrelName() + " reserved the air supply");
+                Debug.Print ("b" + b.getBarrelNumber() + " reserved the air supply");
                 return true;
             }
             else
@@ -104,15 +104,15 @@ namespace FRC3620_Gopher_Hero
                 return false;
             }
         }
-        public void free(BarrelPrototype b)
+        public void free(Barrel b)
         {
             whoIsUsingIt = null;
-            Debug.Print (b.getBarrelName() + " freed the air supply");
+            Debug.Print ("b" + b.getBarrelNumber() + " freed the air supply");
         }
 
     }
 
-    class BarrelPrototype
+    class Barrel
     {
         bool fillRequested = false;
         bool shotRequested = false;
@@ -123,14 +123,19 @@ namespace FRC3620_Gopher_Hero
 
         BarrelState currentBarrelState;
 
-        public BarrelPrototype(OutputPort supply, OutputPort tank, OutputPort shot, AnalogInput pressure, AirMaster fillMaster, String barrelName)
+        OutputPort supplyValve, tankValve, shotValve;
+        AnalogInput pressureSensor;
+        AirMaster fillMaster;
+        int barrelNumber;
+
+        public Barrel(OutputPort supply, OutputPort tank, OutputPort shot, AnalogInput pressure, AirMaster fillMaster, int barrelNumber)
         {
             this.supplyValve = supply;
             this.tankValve = tank;
             this.shotValve = shot;
             this.pressureSensor = pressure;
             this.fillMaster = fillMaster;
-            this.barrelName = barrelName;
+            this.barrelNumber = barrelNumber;
 
             closeValve(supplyValve);
             closeValve(tankValve);
@@ -143,18 +148,11 @@ namespace FRC3620_Gopher_Hero
             waitFireState = new WaitFireState();
             preFireState = new PreFireState();
             firingState = new FiringState();
-
-
         }
 
-        OutputPort supplyValve, tankValve, shotValve;
-        AnalogInput pressureSensor;
-        AirMaster fillMaster;
-        string barrelName;
-
-        public string getBarrelName()
+        internal int getBarrelNumber()
         {
-            return barrelName;
+            return barrelNumber;
         }
 
         public bool isReadyToFill()
@@ -166,7 +164,7 @@ namespace FRC3620_Gopher_Hero
         {
             currentBarrelState = idleState;
             //logger.info("{}: moving to state {}", barrelName, currentBarrelState.getStateName());
-            Debug.Print(barrelName + ": moving to state " + currentBarrelState.getStateName());
+            Debug.Print("b" + barrelNumber + ": moving to state " + currentBarrelState.getStateName());
             currentBarrelState.logAndBeginState(this);
         }
 
@@ -186,7 +184,7 @@ namespace FRC3620_Gopher_Hero
             if (newState != null && newState != currentBarrelState)
             {
                 //logger.info("{}: moving to state {} from {}", barrelName, newState.getStateName(), currentBarrelState.getStateName());
-                Debug.Print(barrelName + ": moving to state " + newState.getStateName() + " from " + currentBarrelState.getStateName());
+                Debug.Print("b" + barrelNumber + ": moving to state " + newState.getStateName() + " from " + currentBarrelState.getStateName());
                 currentBarrelState.endState(this);
                 newState.logAndBeginState(this);
                 currentBarrelState = newState;
@@ -211,19 +209,20 @@ namespace FRC3620_Gopher_Hero
 
         abstract class BarrelState
         {
-            public void logAndBeginState(BarrelPrototype barrel)
+            public void logAndBeginState(Barrel barrel)
             {
                 // SmartDashboard.putString(barrelName + " status", getStateName());
+                Hardware._display.updateBarrelStatus(barrel.barrelNumber, getStateName());
                 beginState(barrel);
             }
 
-            public virtual void beginState(BarrelPrototype barrel)
+            public virtual void beginState(Barrel barrel)
             {
             }
 
-            abstract public BarrelState running(BarrelPrototype barrel);
+            abstract public BarrelState running(Barrel barrel);
 
-            public virtual void endState(BarrelPrototype barrel)
+            public virtual void endState(Barrel barrel)
             {
             }
 
@@ -233,6 +232,7 @@ namespace FRC3620_Gopher_Hero
                 if (stateName == null)
                 {
                     stateName = this.GetType().Name;
+                    stateName = stateName.Substring(0, stateName.Length - 5);
                 }
                 return stateName;
             }
@@ -253,7 +253,7 @@ namespace FRC3620_Gopher_Hero
 
         class IdleState : BarrelState
         {
-            override public void beginState(BarrelPrototype barrel)
+            override public void beginState(Barrel barrel)
             {
                 barrel.closeValve(barrel.supplyValve);
                 barrel.closeValve(barrel.tankValve);
@@ -263,7 +263,7 @@ namespace FRC3620_Gopher_Hero
                 barrel.readyToFill = true;
             }
 
-            override public BarrelState running(BarrelPrototype barrel)
+            override public BarrelState running(Barrel barrel)
             {
                 if (barrel.fillRequested)
                 {
@@ -272,7 +272,7 @@ namespace FRC3620_Gopher_Hero
                 return null;
             }
 
-            override public void endState(BarrelPrototype barrel)
+            override public void endState(Barrel barrel)
             {
                 barrel.readyToFill = false;
             }
@@ -290,7 +290,7 @@ namespace FRC3620_Gopher_Hero
          */
         class WaitFillState : BarrelState
         {
-            override public void beginState(BarrelPrototype barrel)
+            override public void beginState(Barrel barrel)
             {
                 // probably redundant
                 barrel.closeValve(barrel.supplyValve);
@@ -298,7 +298,7 @@ namespace FRC3620_Gopher_Hero
                 barrel.closeValve(barrel.shotValve);
             }
 
-            override public BarrelState running(BarrelPrototype barrel)
+            override public BarrelState running(Barrel barrel)
             {
                 if (barrel.fillMaster.reserve(barrel))
                 {
@@ -310,7 +310,7 @@ namespace FRC3620_Gopher_Hero
                 }
             }
 
-            override public void endState(BarrelPrototype barrel)
+            override public void endState(Barrel barrel)
             {
             }
         }
@@ -328,7 +328,7 @@ namespace FRC3620_Gopher_Hero
         {
             Timer timer = new Timer();
 
-            override public void beginState(BarrelPrototype barrel)
+            override public void beginState(Barrel barrel)
             {
                 barrel.openValve(barrel.supplyValve);
                 barrel.closeValve(barrel.tankValve);
@@ -338,7 +338,7 @@ namespace FRC3620_Gopher_Hero
                 timer.start();
             }
 
-            override public BarrelState running(BarrelPrototype barrel)
+            override public BarrelState running(Barrel barrel)
             {
                 if (timer.hasPeriodPassed(0.50))
                 {
@@ -347,7 +347,7 @@ namespace FRC3620_Gopher_Hero
                 return null;
             }
 
-            override public void endState(BarrelPrototype barrel)
+            override public void endState(Barrel barrel)
             {
                 barrel.closeValve(barrel.supplyValve);
             }
@@ -364,7 +364,7 @@ namespace FRC3620_Gopher_Hero
         {
             Timer timer = new Timer();
 
-            override public void beginState(BarrelPrototype barrel)
+            override public void beginState(Barrel barrel)
             {
                 barrel.openValve(barrel.supplyValve);
                 barrel.openValve(barrel.tankValve);
@@ -376,19 +376,21 @@ namespace FRC3620_Gopher_Hero
                 timer.start();
             }
 
-            override public BarrelState running(BarrelPrototype barrel)
+            override public BarrelState running(Barrel barrel)
             {
                 if (timer.hasPeriodPassed(3.0))
                 {
                     return barrel.waitFireState;
                 }
+                double t = timer.get();
+                Hardware._display.updateBarrelPSI(barrel.barrelNumber, t.ToString("F1"));
                 /*
                  * if (pressureSensor.getVoltage() > 2.5) { return waitFireState; }
                  */
                 return null;
             }
 
-            override public void endState(BarrelPrototype barrel)
+            override public void endState(Barrel barrel)
             {
                 {
                     barrel.readyToShoot = true;
@@ -411,7 +413,7 @@ namespace FRC3620_Gopher_Hero
         class WaitFireState : BarrelState
         {
             Timer timer = new Timer();
-            override public void beginState(BarrelPrototype barrel)
+            override public void beginState(Barrel barrel)
             {
                 // keep the tank valve open so the piston does not move
                 barrel.closeValve(barrel.supplyValve);
@@ -425,7 +427,7 @@ namespace FRC3620_Gopher_Hero
                 timer.start();
             }
 
-            override public BarrelState running(BarrelPrototype barrel)
+            override public BarrelState running(Barrel barrel)
             {
                 if (timer.hasPeriodPassed(0.5))
                 {
@@ -434,7 +436,7 @@ namespace FRC3620_Gopher_Hero
                 return null;
             }
 
-            override public void endState(BarrelPrototype barrel)
+            override public void endState(Barrel barrel)
             {
                 barrel.readyToShoot = false;
 
@@ -448,7 +450,7 @@ namespace FRC3620_Gopher_Hero
         {
             Timer timer = new Timer();
 
-            override public void beginState(BarrelPrototype barrel)
+            override public void beginState(Barrel barrel)
             {
                 barrel.closeValve(barrel.supplyValve);
                 barrel.closeValve(barrel.tankValve);
@@ -458,7 +460,7 @@ namespace FRC3620_Gopher_Hero
                 timer.start();
             }
 
-            override public BarrelState running(BarrelPrototype barrel)
+            override public BarrelState running(Barrel barrel)
             {
                 if (timer.hasPeriodPassed(0.5))
                 {
@@ -467,7 +469,7 @@ namespace FRC3620_Gopher_Hero
                 return null;
             }
 
-            override public void endState(BarrelPrototype barrel)
+            override public void endState(Barrel barrel)
             {
                 barrel.closeValve(barrel.supplyValve);
                 barrel.closeValve(barrel.tankValve);
@@ -485,7 +487,7 @@ namespace FRC3620_Gopher_Hero
         {
             Timer timer = new Timer();
 
-            override public void beginState(BarrelPrototype barrel)
+            override public void beginState(Barrel barrel)
             {
                 barrel.closeValve(barrel.supplyValve);
                 barrel.closeValve(barrel.tankValve);
@@ -495,7 +497,7 @@ namespace FRC3620_Gopher_Hero
                 timer.start();
             }
 
-            override public BarrelState running(BarrelPrototype barrel)
+            override public BarrelState running(Barrel barrel)
             {
                 if (timer.hasPeriodPassed(1.5))
                 {
@@ -504,7 +506,7 @@ namespace FRC3620_Gopher_Hero
                 return null;
             }
 
-            override public void endState(BarrelPrototype barrel)
+            override public void endState(Barrel barrel)
             {
                 barrel.closeValve(barrel.supplyValve);
                 barrel.closeValve(barrel.tankValve);

@@ -71,6 +71,8 @@
     <Content Include="Resources\ch2.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Freemono-bold-18.tinyfnt" />
+    <None Include="Resources\Freesans-bold-18.tinyfnt" />
     <None Include="Resources\NinaB.tinyfnt" />
     <None Include="Resources\ninabd18ppem.tinyfnt" />
     <None Include="Resources\small.tinyfnt" />

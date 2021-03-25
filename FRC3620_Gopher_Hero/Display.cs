@@ -27,27 +27,35 @@ namespace FRC3620_Gopher_Hero
             DisplayModule _displayModule = new DisplayModule(CTRE.HERO.IO.Port1, DisplayModule.OrientationType.Portrait);
 
             /* lets pick a font */
-            Font _smallFont = Properties.Resources.GetFont(Properties.Resources.FontResources.small);
-            Font _bigFont = Properties.Resources.GetFont(Properties.Resources.FontResources.NinaB);
-            _labelConnected = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, 0, 80, 16);
-            _labelEnabled = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, 16, 100, 16);
+            Font _bigFont = Properties.Resources.GetFont(Properties.Resources.FontResources.Freesans_bold_18);
+            int size = 20;
+            int f_y = 0;
+
+            _labelConnected = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 128, size);
+            f_y += size;
+            _labelEnabled = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 128, size);
 
             _labelBarrelStatus = new DisplayModule.LabelSprite[Shooter.NUMBER_OF_BARRELS];
             _labelBarrelPSI = new DisplayModule.LabelSprite[Shooter.NUMBER_OF_BARRELS];
 
-            _labelBarrelStatus[0] = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, 96, 64, 16);
-            _labelBarrelPSI[0] = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, 112, 64, 16);
-            _labelBarrelStatus[1] = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 64, 96, 64, 16);
-            _labelBarrelPSI[1] = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 64, 112, 64, 16);
+            f_y = 80;
+            _labelBarrelStatus[0] = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 64, size);
+            _labelBarrelStatus[1] = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 64, f_y, 64, size);
+            f_y += size;
+            _labelBarrelPSI[0] = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 64, size);
+            _labelBarrelPSI[1] = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 64, f_y, 64, size);
 
-            // if we are Landscape, then DisplayHeight is the X screen dimension, and DisplayWidth is the Y dimension
-            for (int x = 0; x < _displayModule.DisplayWidth; x += 16)
+            if (false)
             {
-                _displayModule.AddRectSprite(DisplayModule.Color.White, x, 0, 1, _displayModule.DisplayHeight);
-            }
-            for (int y = 0; y < _displayModule.DisplayHeight; y += 16)
-            {
-                _displayModule.AddRectSprite(DisplayModule.Color.White, 0, y, _displayModule.DisplayWidth, 1);
+                // if we are Landscape, then DisplayHeight is the X screen dimension, and DisplayWidth is the Y dimension
+                for (int x = 0; x < _displayModule.DisplayWidth; x += 16)
+                {
+                    _displayModule.AddRectSprite(DisplayModule.Color.White, x, 0, 1, _displayModule.DisplayHeight);
+                }
+                for (int y = 0; y < _displayModule.DisplayHeight; y += 16)
+                {
+                    _displayModule.AddRectSprite(DisplayModule.Color.White, 0, y, _displayModule.DisplayWidth, 1);
+                }
             }
         }
 

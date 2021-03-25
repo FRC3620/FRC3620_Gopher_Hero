@@ -36,10 +36,8 @@ namespace FRC3620_Gopher_Hero.Properties
         [System.SerializableAttribute()]
         internal enum FontResources : short
         {
-            small = 13070,
-            NinaB = 18060,
-            nina14 = 19188,
-            ninabd18ppem = 31399,
+            Freesans_bold_18 = -1826,
+            Freemono_bold_18 = 19526,
         }
         [System.SerializableAttribute()]
         internal enum BinaryResources : short

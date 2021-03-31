@@ -95,6 +95,9 @@ namespace FRC3620_Gopher_Hero
                 double v = Hardware.voltage.Read();
                 Hardware._display.updateVoltage(v);
 
+                bool limit = Hardware.lid_limit_switch.Read();
+                Hardware._display.updateLimitSwitch(limit);
+
                 if (tick.hasPeriodPassed(5.0))
                 {
                     Debug.Print("tick...");

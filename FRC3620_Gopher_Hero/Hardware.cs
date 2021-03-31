@@ -23,6 +23,8 @@ namespace FRC3620_Gopher_Hero
         public static AnalogInput b1_pressure_sensor;
         public static AnalogInput voltage;
 
+        public static InputPort lid_limit_switch;
+
         /* Gamepad */
         public static GameController _gamepad;
 
@@ -51,6 +53,8 @@ namespace FRC3620_Gopher_Hero
             b1_shot = new OutputPort(CTRE.HERO.IO.Port3.Pin8, false);
 
             voltage = new AnalogInput(CTRE.HERO.IO.Port8.Analog_Pin5);
+
+            lid_limit_switch = new InputPort(CTRE.HERO.IO.Port8.Pin6, false, Port.ResistorMode.PullUp);
 
             UsbHostDevice usb = CTRE.Phoenix.UsbHostDevice.GetInstance();
             _gamepad = new GameController(usb);

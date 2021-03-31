@@ -6,10 +6,10 @@ namespace FRC3620_Gopher_Hero
 {
     public class Display
     {
-        DisplayModule.LabelSprite _labelConnected, _labelEnabled, _labelVoltage;
+        DisplayModule.LabelSprite _labelConnected, _labelEnabled, _labelVoltage, _label_limit;
         DisplayModule.LabelSprite[] _labelBarrelStatus, _labelBarrelPSI;
 
-        ChangeDetector cd_connected, cd_enabled, cd_voltage;
+        ChangeDetector cd_connected, cd_enabled, cd_voltage, cd_limit;
         ChangeDetector[] cd_barrelStatus, cd_barrelPSI;
 
         public Display ()
@@ -17,6 +17,7 @@ namespace FRC3620_Gopher_Hero
             cd_connected = new ChangeDetector();
             cd_enabled = new ChangeDetector();
             cd_voltage = new ChangeDetector();
+            cd_limit = new ChangeDetector();
             cd_barrelStatus = new ChangeDetector[Shooter.NUMBER_OF_BARRELS];
             cd_barrelPSI = new ChangeDetector[Shooter.NUMBER_OF_BARRELS];
             for (int i = 0; i < Shooter.NUMBER_OF_BARRELS; i++)
@@ -37,6 +38,8 @@ namespace FRC3620_Gopher_Hero
             _labelEnabled = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 128, size);
             f_y += size;
             _labelVoltage = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 128, size);
+            f_y += size;
+            _label_limit = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 128, size);
 
             _labelBarrelStatus = new DisplayModule.LabelSprite[Shooter.NUMBER_OF_BARRELS];
             _labelBarrelPSI = new DisplayModule.LabelSprite[Shooter.NUMBER_OF_BARRELS];
@@ -79,6 +82,15 @@ namespace FRC3620_Gopher_Hero
             {
                 _labelEnabled.SetText(value);
                 _labelEnabled.SetColor(enabled ? DisplayModule.Color.Green : DisplayModule.Color.Red);
+            }
+        }
+
+        public void updateLimitSwitch(bool hit)
+        {
+            String value = hit ? "hit" : "not hit";
+            if (cd_limit.valueChanged(value))
+            {
+                _label_limit.SetText(value);
             }
         }
 

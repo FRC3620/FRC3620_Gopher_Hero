@@ -37,7 +37,6 @@ namespace FRC3620_Gopher_Hero.Properties
         internal enum FontResources : short
         {
             Freesans_bold_18 = -1826,
-            Freemono_bold_18 = 19526,
         }
         [System.SerializableAttribute()]
         internal enum BinaryResources : short

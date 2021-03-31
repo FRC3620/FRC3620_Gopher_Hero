@@ -6,16 +6,17 @@ namespace FRC3620_Gopher_Hero
 {
     public class Display
     {
-        DisplayModule.LabelSprite _labelConnected, _labelEnabled;
+        DisplayModule.LabelSprite _labelConnected, _labelEnabled, _labelVoltage;
         DisplayModule.LabelSprite[] _labelBarrelStatus, _labelBarrelPSI;
 
-        ChangeDetector cd_connected, cd_enabled;
+        ChangeDetector cd_connected, cd_enabled, cd_voltage;
         ChangeDetector[] cd_barrelStatus, cd_barrelPSI;
 
         public Display ()
         {
             cd_connected = new ChangeDetector();
             cd_enabled = new ChangeDetector();
+            cd_voltage = new ChangeDetector();
             cd_barrelStatus = new ChangeDetector[Shooter.NUMBER_OF_BARRELS];
             cd_barrelPSI = new ChangeDetector[Shooter.NUMBER_OF_BARRELS];
             for (int i = 0; i < Shooter.NUMBER_OF_BARRELS; i++)
@@ -34,6 +35,8 @@ namespace FRC3620_Gopher_Hero
             _labelConnected = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 128, size);
             f_y += size;
             _labelEnabled = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 128, size);
+            f_y += size;
+            _labelVoltage = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 128, size);
 
             _labelBarrelStatus = new DisplayModule.LabelSprite[Shooter.NUMBER_OF_BARRELS];
             _labelBarrelPSI = new DisplayModule.LabelSprite[Shooter.NUMBER_OF_BARRELS];
@@ -76,6 +79,15 @@ namespace FRC3620_Gopher_Hero
             {
                 _labelEnabled.SetText(value);
                 _labelEnabled.SetColor(enabled ? DisplayModule.Color.Green : DisplayModule.Color.Red);
+            }
+        }
+
+        public void updateVoltage (double v)
+        {
+            String s = v.ToString("F1");
+            if (cd_voltage.valueChanged(s))
+            {
+                _labelVoltage.SetText(s);
             }
         }
 

@@ -89,9 +89,11 @@ namespace FRC3620_Gopher_Hero
                 }
                 btn_b_was = btn_b;
 
-
                 //
                 shooter.periodic(enabled);
+
+                double v = Hardware.voltage.Read();
+                Hardware._display.updateVoltage(v);
 
                 if (tick.hasPeriodPassed(5.0))
                 {

@@ -121,9 +121,6 @@
   <data name="ch2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ch2.jpg;System.Byte[], mscorlib, Version=4.4.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="Freemono_bold_18" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Freemono-bold-18.tinyfnt;System.Byte[], mscorlib, Version=4.4.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="Freesans_bold_18" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Freesans-bold-18.tinyfnt;System.Byte[], mscorlib, Version=4.4.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>

@@ -1,6 +1,7 @@
 using System;
 using Microsoft.SPOT;
 using CTRE.Gadgeteer.Module;
+using Microsoft.SPOT.Hardware;
 
 namespace FRC3620_Gopher_Hero
 {
@@ -11,6 +12,8 @@ namespace FRC3620_Gopher_Hero
 
         ChangeDetector cd_connected, cd_enabled, cd_voltage, cd_limit;
         ChangeDetector[] cd_barrelStatus, cd_barrelPSI;
+
+        OutputPort RSL_1;
 
         public Display ()
         {
@@ -63,6 +66,8 @@ namespace FRC3620_Gopher_Hero
                     _displayModule.AddRectSprite(DisplayModule.Color.White, 0, y, _displayModule.DisplayWidth, 1);
                 }
             }
+
+            RSL_1 = new OutputPort(CTRE.HERO.IO.Port5.Pin6, false);
         }
 
         public void updateConnected (bool connected)
@@ -77,11 +82,12 @@ namespace FRC3620_Gopher_Hero
 
         public void updateEnabled(bool enabled)
         {
-            String value = enabled ? "Enabled" : "Disabled";
+            String value = enabled ? "Enabled!" : "Disabled";
             if (cd_enabled.valueChanged(value))
             {
                 _labelEnabled.SetText(value);
                 _labelEnabled.SetColor(enabled ? DisplayModule.Color.Green : DisplayModule.Color.Red);
+                RSL_1.Write(enabled);
             }
         }
 

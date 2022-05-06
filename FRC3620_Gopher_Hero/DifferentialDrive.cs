@@ -12,7 +12,7 @@ namespace FRC3620_Gopher_Hero
             this.m_rightMotor = right;
         }
 
-        private double m_rightSideInvertMultiplier = -1.0;
+        private double m_leftSideInvertMultiplier = -1.0;
         public static double kDefaultDeadband = 0.02;
         public static double kDefaultMaxOutput = 1.0;
 
@@ -27,8 +27,6 @@ namespace FRC3620_Gopher_Hero
             double zRotation = MathUtil.clamp(_zRotation, -1.0, 1.0);
             zRotation = MathUtil.applyDeadband(zRotation, m_deadband);
 
-            //Debug.Print("Joy1: " + _xSpeed + " " + xSpeed + "; " + _zRotation + " " + zRotation);
-
             // Square the inputs (while preserving the sign) to increase fine control
             // while permitting full power.
             if (squareInputs)
@@ -36,19 +34,19 @@ namespace FRC3620_Gopher_Hero
                 xSpeed = MathUtil.copySign(xSpeed * xSpeed, xSpeed);
                 zRotation = MathUtil.copySign(zRotation * zRotation, zRotation);
             }
-           // Debug.Print("Joy2: " + _xSpeed + " " + xSpeed + "; " + _zRotation + " " + zRotation);
 
             // stolen from https://stemrobotics.cs.pdx.edu/node/4736
+            // fixed for some sign mismatches
 
-            double leftMotorOutput = zRotation - xSpeed;
-            double rightMotorOutput = zRotation + xSpeed;
+            double leftMotorOutput = -zRotation - xSpeed;
+            double rightMotorOutput = -zRotation + xSpeed;
 
-            double leftPower = MathUtil.clamp(leftMotorOutput, -1.0, 1.0);
+            double leftPower = MathUtil.clamp(leftMotorOutput, -1.0, 1.0) * m_leftSideInvertMultiplier;
             double rightPower = MathUtil.clamp(rightMotorOutput, -1.0, 1.0);
             m_leftMotor.Set(CTRE.Phoenix.MotorControl.ControlMode.PercentOutput, leftPower);
             m_rightMotor.Set(CTRE.Phoenix.MotorControl.ControlMode.PercentOutput, rightPower);
 
-            //Debug.Print("Motor: " + leftPower + " " + rightPower);
+            // Debug.Print("Joy: " + _xSpeed + " -> " + xSpeed + ", " + _zRotation + " -> " + zRotation + "; Motor: " + leftPower + ", " + rightPower);
         }
 
     }

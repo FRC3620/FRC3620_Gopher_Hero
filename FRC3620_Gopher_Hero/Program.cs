@@ -13,7 +13,7 @@ namespace FRC3620_Gopher_Hero
         {
             DifferentialDrive drive = new DifferentialDrive(Hardware._leftDrive, Hardware._rightDrive);
 
-            Lid lid = new Lid(Hardware._lid);
+            Lid lid = new Lid(Hardware._lid, Hardware.lid_limit_switch, Hardware.lid_limit_switch_led);
 
             Shooter shooter = new Shooter();
             shooter.startup();

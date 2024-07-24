@@ -12,25 +12,22 @@ namespace FRC3620_Gopher_Hero
         InputPort m_lidSwitch;
         OutputPort m_lidSwitchled;
 
-        public Lid (BaseMotorController lidMotor, InputPort lidSwitch, OutputPort lidSwitchled)
+        public Lid (BaseMotorController lidMotor, InputPort lidSwitch)
         {
             m_lidMotor = lidMotor;
             m_lidSwitch = lidSwitch;
-            m_lidSwitchled = lidSwitchled;
         }
 
         public void lidUp()
         {
-            m_lidMotor.Set(CTRE.Phoenix.MotorControl.ControlMode.PercentOutput, 0.2);
+            m_lidMotor.Set(CTRE.Phoenix.MotorControl.ControlMode.PercentOutput, 0.6);
         }
 
         public void lidDown()
         {
-            Boolean b = m_lidSwitch.Read();
-            m_lidSwitchled.Write(b);
-            if (b)
+            if (!isLidSwitchPressed())
             {
-                m_lidMotor.Set(CTRE.Phoenix.MotorControl.ControlMode.PercentOutput, -0.2);
+                m_lidMotor.Set(CTRE.Phoenix.MotorControl.ControlMode.PercentOutput, -0.6);
             } else
             {
                 lidStop();
@@ -39,6 +36,11 @@ namespace FRC3620_Gopher_Hero
         public void lidStop()
         {
             m_lidMotor.Set(CTRE.Phoenix.MotorControl.ControlMode.PercentOutput, 0.0);
+        }
+
+        public Boolean isLidSwitchPressed()
+        {
+            return !m_lidSwitch.Read();
         }
     }
 }

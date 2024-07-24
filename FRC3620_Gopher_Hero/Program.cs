@@ -13,7 +13,7 @@ namespace FRC3620_Gopher_Hero
         {
             DifferentialDrive drive = new DifferentialDrive(Hardware._leftDrive, Hardware._rightDrive);
 
-            Lid lid = new Lid(Hardware._lid, Hardware.lid_limit_switch, Hardware.lid_limit_switch_led);
+            Lid lid = new Lid(Hardware._lid, Hardware.lid_limit_switch);
 
             Shooter shooter = new Shooter();
             shooter.startup();
@@ -48,21 +48,24 @@ namespace FRC3620_Gopher_Hero
                 // read gamepad data all at once
                 Hardware._gamepad.GetAllValues(ref gv);
 
-                // drive the robot with F710 right side joystick
-                drive.arcadeDrive(gv.axes[3], gv.axes[2], false);
+                // drive the robot with F710 (left side[1] forward, reverse, right side[2] side to side)
+                drive.arcadeDrive(gv.axes[1], gv.axes[2], false);
 
                 // work the lid based on F710 POV
                 int pov = gv.pov;
                 if ((pov & 0x1) != 0)
                 {
                     // POV UP
+                    Hardware._display.updateLidStatus("Up");
                     lid.lidUp();
                 } else if ((pov & 0x2) != 0)
                 {
                     // POV DOWN
+                    Hardware._display.updateLidStatus("Down");
                     lid.lidDown();
                 } else
                 {
+                    Hardware._display.updateLidStatus("Stop");
                     lid.lidStop();
                 }
 
@@ -95,8 +98,9 @@ namespace FRC3620_Gopher_Hero
                 double v = Hardware.voltage.Read();
                 Hardware._display.updateVoltage(v);
 
-                bool limit = Hardware.lid_limit_switch.Read();
+                bool limit = lid.isLidSwitchPressed();
                 Hardware._display.updateLimitSwitch(limit);
+                Hardware.lid_limit_switch_led.Write(limit);
 
                 if (tick.hasPeriodPassed(5.0))
                 {

@@ -45,6 +45,7 @@ namespace FRC3620_Gopher_Hero
             _lid.ConfigForwardLimitSwitchSource(CTRE.Phoenix.MotorControl.LimitSwitchSource.FeedbackConnector, CTRE.Phoenix.MotorControl.LimitSwitchNormal.NormallyOpen);
             _lid.ConfigReverseLimitSwitchSource(CTRE.Phoenix.MotorControl.LimitSwitchSource.FeedbackConnector, CTRE.Phoenix.MotorControl.LimitSwitchNormal.NormallyOpen);
             _lid.ConfigContinuousCurrentLimit(2);
+            _lid.SetInverted(true);
 
             // on port 3: Hardware Pin 1 is CTRE.HERO.IO.Port3.Pin3.
             //            Hardware Pin 6 is CTRE.HERO.IO.Port3.Pin8.

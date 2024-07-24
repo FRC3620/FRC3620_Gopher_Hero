@@ -7,10 +7,10 @@ namespace FRC3620_Gopher_Hero
 {
     public class Display
     {
-        DisplayModule.LabelSprite _labelConnected, _labelEnabled, _labelVoltage, _label_limit;
+        DisplayModule.LabelSprite _labelConnected, _labelEnabled, _labelVoltage, _label_limit, _label_lid_status;
         DisplayModule.LabelSprite[] _labelBarrelStatus, _labelBarrelPSI;
 
-        ChangeDetector cd_connected, cd_enabled, cd_voltage, cd_limit;
+        ChangeDetector cd_connected, cd_enabled, cd_voltage, cd_limit, cd_lid_status;
         ChangeDetector[] cd_barrelStatus, cd_barrelPSI;
 
         OutputPort RSL_1;
@@ -21,6 +21,7 @@ namespace FRC3620_Gopher_Hero
             cd_enabled = new ChangeDetector();
             cd_voltage = new ChangeDetector();
             cd_limit = new ChangeDetector();
+            cd_lid_status = new ChangeDetector();
             cd_barrelStatus = new ChangeDetector[Shooter.NUMBER_OF_BARRELS];
             cd_barrelPSI = new ChangeDetector[Shooter.NUMBER_OF_BARRELS];
             for (int i = 0; i < Shooter.NUMBER_OF_BARRELS; i++)
@@ -42,7 +43,8 @@ namespace FRC3620_Gopher_Hero
             f_y += size;
             _labelVoltage = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 128, size);
             f_y += size;
-            _label_limit = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 128, size);
+            _label_lid_status = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 0, f_y, 64, size);
+            _label_limit = _displayModule.AddLabelSprite(_bigFont, DisplayModule.Color.White, 64, f_y, 64, size);
 
             _labelBarrelStatus = new DisplayModule.LabelSprite[Shooter.NUMBER_OF_BARRELS];
             _labelBarrelPSI = new DisplayModule.LabelSprite[Shooter.NUMBER_OF_BARRELS];
@@ -97,6 +99,14 @@ namespace FRC3620_Gopher_Hero
             if (cd_limit.valueChanged(value))
             {
                 _label_limit.SetText(value);
+            }
+        }
+
+        public void updateLidStatus(String value)
+        { 
+            if (cd_lid_status.valueChanged(value))
+            {
+                _label_lid_status.SetText(value);
             }
         }
 
